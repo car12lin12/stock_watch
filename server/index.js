@@ -16,13 +16,6 @@ app.use(function (req, res, next) {
 // run with : node index.js
 
 app.get('/stocks', async (req, res) => {
-  // mock data
-  //   const creators = [
-  //     { name: 'Code drip', img: 'https://' },
-  //     { name: 'Milky Chance', img: 'https://' },
-  //     { name: 'Aaron Jack', img: 'https://' }
-  //   ];
-
   // get all stocks from db as array
   const stocks = await db.getAllStocks();
   console.log(stocks);
@@ -53,6 +46,16 @@ app.post('/stocks', async (req, res) => {
 
   //   res.send('success');
   res.send(allStocks);
+});
+
+app.delete('/stocks/id', async (req, res) => {
+  console.log(req.body);
+
+  // to do : Delete from DB
+  const allStocks = await db.deleteStock(req.body.id);
+
+  res.send('success');
+  // res.send(allStocks);
 });
 
 app.listen(port, () => {

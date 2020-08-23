@@ -27,7 +27,7 @@ async function scrapeStock(url) {
 
   const regex = /,/g;
   const found = currentPrice.match(regex);
-  if (found.length > 0) {
+  if (found) {
     currentPrice = currentPrice.replace(regex, '');
   }
   const boughtAt = currentPrice;

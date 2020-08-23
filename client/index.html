@@ -43,6 +43,13 @@
         });
       }
 
+      function deleteStock(el) {
+        console.log(el.id);
+        fetch('http://localhost:3008/stocks/' + el.id, {
+          method: 'DELETE'
+        });
+      }
+
       /**
         Creates a new element with specified type and attributes
         then it is appended to div with class='container'
@@ -68,7 +75,7 @@
         // load stocks on site
         const ctr = document.querySelector('.container');
         stocks.forEach((stock) => {
-          const card = newEl('div', { class: 'card' });
+          const card = newEl('div', { class: 'card', id: `${stock.id}` });
           const title = newEl('h4', { innerText: stock.name });
           const currentPrice = newEl('h3', {
             innerText: `Current Price : $ ${stock.currentPrice}`
@@ -79,7 +86,11 @@
           const difference = newEl('h3', {
             innerText: `Diff : $ ${stock.currentPrice - stock.boughtAt}`
           });
-          const deleteBtn = newEl('button', { innerText: 'delete' });
+          const deleteBtn = newEl('button', {
+            innerText: 'delete',
+            onClick: 'deleteStock(this)',
+            id: `${stock.id}`
+          });
           card.appendChild(deleteBtn);
           card.appendChild(title);
           card.appendChild(currentPrice);
