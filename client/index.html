@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+  <!--<![endif]-->
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <h1>Stock Watch</h1>
+    <h4>Add a stock to watch</h4>
+    <input class="URL-input" type="text" placeholder="Paste Your Stock URL" />
+    <button type="submit" onClick="submitStock()">Submit</button>
+
+    <div class="container"></div>
+
+    <script>
+      /**
+        extracts text value from input
+        then send value to server
+      */
+      function submitStock() {
+        const stockURL = document.querySelector('.URL-input').value;
+
+        // native js post
+        fetch('http://localhost:3008/stocks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ stockURL })
+        });
+      }
+
+      /**
+        Creates a new element with specified type and attributes
+        then it is appended to div with class='container'
+      */
+      function newEl(type, attrs = {}) {
+        const el = document.createElement(type);
+        for (let attr in attrs) {
+          const value = attrs[attr];
+          if (attr == 'innerText') {
+            el.innerText = value;
+          } else {
+            el.setAttribute(attr, value);
+          }
+        }
+        return el;
+      }
+
+      async function loadStocks() {
+        // using native js fetch function to get stock data from server at this path
+        const res = await fetch('http://localhost:3008/stocks');
+        const stocks = await res.json();
+
+        // load stocks on site
+        const ctr = document.querySelector('.container');
+        stocks.forEach((stock) => {
+          const card = newEl('div', { class: 'card' });
+          const title = newEl('h4', { innerText: stock.name });
+          const currentPrice = newEl('h3', {
+            innerText: `Current Price : $ ${stock.currentPrice}`
+          });
+          const boughtAt = newEl('h3', {
+            innerText: `Bought at : $  ${stock.boughtAt}`
+          });
+          const difference = newEl('h3', {
+            innerText: `Diff : $ ${stock.currentPrice - stock.boughtAt}`
+          });
+          const deleteBtn = newEl('button', { innerText: 'delete' });
+          card.appendChild(deleteBtn);
+          card.appendChild(title);
+          card.appendChild(currentPrice);
+          card.appendChild(boughtAt);
+          card.appendChild(difference);
+          ctr.appendChild(card);
+        });
+      }
+      loadStocks();
+    </script>
+    <style>
+      body {
+        background-color: #21262e;
+        font-family: 'Catamaran', sans-serif;
+        /* font-weight: 100; */
+        letter-spacing: 3px;
+        color: #b5b0a7;
+      }
+
+      .container {
+        display: flex;
+      }
+      .card {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid white;
+      }
+    </style>
+  </body>
+</html>
