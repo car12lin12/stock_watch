@@ -1,0 +1,2 @@
+The stock watch app allows a user to add a stock to their watchlist and over time, they can observe their total difference. The total difference represents the money a user would have gained or lost had they actually bought a certain stock, excluding taxes and broker fees.
+The app allows a user to add a stock from a yahoo finances URL and can delete a stock they no longer want to watch. The app is better suited to watch stocks that are meant for longer term investments.
