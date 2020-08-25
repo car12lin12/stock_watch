@@ -1,6 +1,10 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const port = 3008;
+var cors = require('cors');
+app.use(cors());
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 var bodyParser = require('body-parser');
 const scrapers = require('./scrapers');
@@ -16,29 +20,28 @@ app.use(function (req, res, next) {
 // run with : node index.js
 
 app.get('/stocks', async (req, res) => {
-  // mock data
-  //   const creators = [
-  //     { name: 'Code drip', img: 'https://' },
-  //     { name: 'Milky Chance', img: 'https://' },
-  //     { name: 'Aaron Jack', img: 'https://' }
-  //   ];
-
   // get all stocks from db as array
   const stocks = await db.getAllStocks();
-  console.log(stocks);
-  // ???? may have to scrape all stock urls here for currentPrice.
+
+  // update the currentPrice
   const forLoop = async () => {
     for (let i = 0; i < stocks.length; i++) {
       stocks[i].currentPrice = await scrapers.getCurrentPrice(stocks[i].URL);
+      // stocks[i].currentPrice = await scrapers.getCurrentPrice(
+      //   'https://finance.yahoo.com/quote/dell?ltr=1'
+      // );
+      // console.log(stocks[i]);
+      // update DB for currentPrice
+      await db.updateStock(stocks[i]);
     }
   };
-  forLoop();
+  await forLoop();
 
   res.send(stocks);
 });
 
 app.post('/stocks', async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   // 1 scrape channel
   const stockData = await scrapers.scrapeStock(req.body.stockURL);
   // console.log({ stockData });
@@ -48,11 +51,22 @@ app.post('/stocks', async (req, res) => {
     stockData.name,
     stockData.currentPrice,
     stockData.boughtAt,
+    // stockData.difference,
     req.body.stockURL
   );
 
   //   res.send('success');
   res.send(allStocks);
+});
+
+app.delete('/stocks/:id', async (req, res) => {
+  // console.log('request :: ', req.params.id);
+
+  // Delete from DB
+  await db.deleteStock(req.params.id);
+
+  res.send('success');
+  // res.send(allStocks);
 });
 
 app.listen(port, () => {

@@ -26,12 +26,12 @@ async function scrapeStock(url) {
   let currentPrice = await text.jsonValue();
 
   const regex = /,/g;
-  const found = currentPrice.match(regex);
-  if (found.length > 0) {
-    currentPrice = currentPrice.replace(regex, '');
-  }
+  // const found = currentPrice.match(regex);
+  // if (found) {
+  currentPrice = currentPrice.replace(regex, '');
+  // }
   const boughtAt = currentPrice;
-
+  // const difference = currentPrice - boughtAt;
   //   const src = await el2.getProperty('src');
   //   const avatarURL = await src.jsonValue();
 
@@ -50,17 +50,20 @@ async function getCurrentPrice(url) {
 
   // fetch stock price
   const [el] = await page.$x(
-    '//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]'
+    '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div/div[4]/div/div/div/div[3]/div[1]/div/span[1]'
   );
   let text = await el.getProperty('textContent');
-  const currentPrice = await text.jsonValue();
+
+  let currentPrice = await text.jsonValue();
+  const regex = /,/g;
+  currentPrice = currentPrice.replace(regex, '');
 
   browser.close();
 
   // for testing
-  console.log({ currentPrice });
+  console.log(currentPrice);
 
-  return { currentPrice };
+  return currentPrice;
 }
 
 // scrapeStock('https://finance.yahoo.com/quote/ZM/');
