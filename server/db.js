@@ -86,7 +86,7 @@ async function insertStock(name, currentPrice, boughtAt, URL) {
   // 3 save new object / model instance in db repository
   const stockRepo = connection.getRepository(Stock);
   const res = await stockRepo.save(stock);
-  console.log('saved', res);
+  // console.log('saved', res);
 
   // 4 return new list
   const allStocks = await stockRepo.find();

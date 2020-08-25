@@ -30,11 +30,11 @@
         extracts text value from input
         then send value to server
       */
-      function submitStock() {
+      async function submitStock() {
         const stockURL = document.querySelector('.URL-input').value;
 
         // native js post
-        fetch('http://localhost:3008/stocks', {
+        await fetch('http://localhost:3008/stocks', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -43,10 +43,10 @@
         });
       }
 
-      function deleteStock(el) {
-        console.log(el.id);
+      async function deleteStock(el) {
+        // console.log(el.id);
 
-        fetch(`http://localhost:3008/stocks/${el.id}`, {
+        await fetch(`http://localhost:3008/stocks/${el.id}`, {
           method: 'DELETE'
         });
       }
@@ -70,8 +70,13 @@
 
       async function loadStocks() {
         // using native js fetch function to get stock data from server at this path
-        const res = await fetch('http://localhost:3008/stocks');
+        // const res = await fetch('http://localhost:3008/stocks');
+        const res = await fetch(`http://localhost:3008/stocks`, {
+          method: 'GET'
+        });
+
         const stocks = await res.json();
+        console.log(' my stocks babies :::: ', stocks);
 
         // load stocks on site
         const ctr = document.querySelector('.container');

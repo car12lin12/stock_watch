@@ -50,17 +50,18 @@ async function getCurrentPrice(url) {
 
   // fetch stock price
   const [el] = await page.$x(
-    '//*[@id="quote-header-info"]/div[3]/div[1]/div/span[1]'
+    '/html/body/div[1]/div/div/div[1]/div/div[2]/div/div/div[4]/div/div/div/div[3]/div[1]/div/span[1]'
   );
   let text = await el.getProperty('textContent');
+
   const currentPrice = await text.jsonValue();
 
   browser.close();
 
   // for testing
-  console.log({ currentPrice });
+  console.log(currentPrice);
 
-  return { currentPrice };
+  return currentPrice;
 }
 
 // scrapeStock('https://finance.yahoo.com/quote/ZM/');
