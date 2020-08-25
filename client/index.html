@@ -68,7 +68,16 @@
         return el;
       }
 
+      async function loadTotal(total) {
+        const ctr = document.querySelector('.container');
+        const card = newEl('div', { class: 'card', id: 'total' });
+        const totalDiff = newEl('h4', { innerText: `TOTAL : $ ${total}` });
+        card.appendChild(totalDiff);
+        ctr.appendChild(card);
+      }
+
       async function loadStocks() {
+        let total = 0;
         // using native js fetch function to get stock data from server at this path
         // const res = await fetch('http://localhost:3008/stocks');
         const res = await fetch(`http://localhost:3008/stocks`, {
@@ -76,7 +85,7 @@
         });
 
         const stocks = await res.json();
-        console.log(' my stocks babies :::: ', stocks);
+        // console.log(' my stocks babies :::: ', stocks);
 
         // load stocks on site
         const ctr = document.querySelector('.container');
@@ -89,8 +98,11 @@
           const boughtAt = newEl('h3', {
             innerText: `Bought at : $  ${stock.boughtAt}`
           });
+          let diff = stock.currentPrice - stock.boughtAt;
+          diff = parseFloat(diff.toFixed(2));
+          total += diff;
           const difference = newEl('h3', {
-            innerText: `Diff : $ ${stock.currentPrice - stock.boughtAt}`
+            innerText: `Diff : $ ${diff}`
           });
           const deleteBtn = newEl('button', {
             innerText: 'delete',
@@ -104,6 +116,8 @@
           card.appendChild(difference);
           ctr.appendChild(card);
         });
+
+        await loadTotal(total);
       }
       loadStocks();
     </script>
@@ -123,6 +137,12 @@
         margin: 20px;
         padding: 20px;
         border: 1px solid white;
+      }
+
+      #total {
+        position: fixed;
+        top: 0;
+        right: 0;
       }
     </style>
   </body>

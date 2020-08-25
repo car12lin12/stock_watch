@@ -26,12 +26,12 @@ async function scrapeStock(url) {
   let currentPrice = await text.jsonValue();
 
   const regex = /,/g;
-  const found = currentPrice.match(regex);
-  if (found) {
-    currentPrice = currentPrice.replace(regex, '');
-  }
+  // const found = currentPrice.match(regex);
+  // if (found) {
+  currentPrice = currentPrice.replace(regex, '');
+  // }
   const boughtAt = currentPrice;
-
+  // const difference = currentPrice - boughtAt;
   //   const src = await el2.getProperty('src');
   //   const avatarURL = await src.jsonValue();
 
@@ -54,7 +54,9 @@ async function getCurrentPrice(url) {
   );
   let text = await el.getProperty('textContent');
 
-  const currentPrice = await text.jsonValue();
+  let currentPrice = await text.jsonValue();
+  const regex = /,/g;
+  currentPrice = currentPrice.replace(regex, '');
 
   browser.close();
 

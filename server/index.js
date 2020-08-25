@@ -1,8 +1,10 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const port = 3008;
 var cors = require('cors');
 app.use(cors());
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 var bodyParser = require('body-parser');
 const scrapers = require('./scrapers');
@@ -20,8 +22,8 @@ app.use(function (req, res, next) {
 app.get('/stocks', async (req, res) => {
   // get all stocks from db as array
   const stocks = await db.getAllStocks();
-  // console.log(stocks);
-  // ???? may have to scrape all stock urls here for currentPrice.
+
+  // update the currentPrice
   const forLoop = async () => {
     for (let i = 0; i < stocks.length; i++) {
       stocks[i].currentPrice = await scrapers.getCurrentPrice(stocks[i].URL);
@@ -29,10 +31,12 @@ app.get('/stocks', async (req, res) => {
       //   'https://finance.yahoo.com/quote/dell?ltr=1'
       // );
       // console.log(stocks[i]);
+      // update DB for currentPrice
+      await db.updateStock(stocks[i]);
     }
   };
   await forLoop();
-  console.log(' i am getting stocks with new currentPrice');
+
   res.send(stocks);
 });
 
@@ -47,6 +51,7 @@ app.post('/stocks', async (req, res) => {
     stockData.name,
     stockData.currentPrice,
     stockData.boughtAt,
+    // stockData.difference,
     req.body.stockURL
   );
 
@@ -58,7 +63,7 @@ app.delete('/stocks/:id', async (req, res) => {
   // console.log('request :: ', req.params.id);
 
   // Delete from DB
-  const allStocks = await db.deleteStock(req.params.id);
+  await db.deleteStock(req.params.id);
 
   res.send('success');
   // res.send(allStocks);

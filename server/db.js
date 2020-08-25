@@ -36,7 +36,7 @@ const StockSchema = new EntitySchema({
       type: 'double precision'
     },
     // difference: {
-    //   type: 'float'
+    //   type: 'double precision'
     // },
     URL: {
       type: 'text'
@@ -51,11 +51,11 @@ const StockSchema = new EntitySchema({
 async function getConnection() {
   return await typeorm.createConnection({
     type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: 'B!ls1mP3&r7!@',
-    database: 'mystocks',
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
     synchronize: true,
     logging: false,
     entities: [StockSchema]
@@ -86,7 +86,7 @@ async function insertStock(name, currentPrice, boughtAt, URL) {
   // 3 save new object / model instance in db repository
   const stockRepo = connection.getRepository(Stock);
   const res = await stockRepo.save(stock);
-  // console.log('saved', res);
+  console.log('saved !!!!!!!!!!!!!', res);
 
   // 4 return new list
   const allStocks = await stockRepo.find();
@@ -109,8 +109,26 @@ async function deleteStock(id) {
   return id;
 }
 
+async function updateStock(stock) {
+  // 1 connect to db
+  const connection = await getConnection();
+  const stockRepo = connection.getRepository(Stock);
+  const res = await stockRepo.save({
+    id: stock.id,
+    currentPrice: stock.currentPrice
+  }); // update existing entry
+  // console.log('saved', res);
+
+  // 4 return new list
+  // const allStocks = await stockRepo.find();
+  connection.close();
+  // return allStocks;
+  return res;
+}
+
 module.exports = {
   getAllStocks,
   insertStock,
-  deleteStock
+  deleteStock,
+  updateStock
 };
