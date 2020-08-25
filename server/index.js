@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const port = 3008;
+var cors = require('cors');
+app.use(cors());
 
 var bodyParser = require('body-parser');
 const scrapers = require('./scrapers');
@@ -48,11 +50,11 @@ app.post('/stocks', async (req, res) => {
   res.send(allStocks);
 });
 
-app.delete('/stocks/id', async (req, res) => {
-  console.log(req.body);
+app.delete('/stocks/:id', async (req, res) => {
+  console.log('request :: ', req.params.id);
 
-  // to do : Delete from DB
-  const allStocks = await db.deleteStock(req.body.id);
+  // Delete from DB
+  const allStocks = await db.deleteStock(req.params.id);
 
   res.send('success');
   // res.send(allStocks);

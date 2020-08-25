@@ -97,16 +97,16 @@ async function insertStock(name, currentPrice, boughtAt, URL) {
 async function deleteStock(id) {
   // 1 connect to db
   const connection = await getConnection();
-
   // 3 save new object / model instance in db repository
   const stockRepo = connection.getRepository(Stock);
-  const res = await stockRepo.save(stock); // delete instead
-  console.log('saved', res);
+  const res = await stockRepo.delete({ id: id }); // delete instead
+  // console.log('saved', res);
 
   // 4 return new list
-  const allStocks = await stockRepo.find();
+  // const allStocks = await stockRepo.find();
   connection.close();
-  return allStocks;
+  // return allStocks;
+  return id;
 }
 
 module.exports = {

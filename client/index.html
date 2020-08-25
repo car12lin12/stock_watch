@@ -45,7 +45,8 @@
 
       function deleteStock(el) {
         console.log(el.id);
-        fetch('http://localhost:3008/stocks/' + el.id, {
+
+        fetch(`http://localhost:3008/stocks/${el.id}`, {
           method: 'DELETE'
         });
       }
